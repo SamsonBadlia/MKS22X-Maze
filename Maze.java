@@ -40,6 +40,21 @@ public class Maze{
       if (!hasEnd() || !hasStart()) throw new IllegalStateException("Missing either start or end");
     }
 
+    public String toString(){
+      String s = "";
+      for (int i = 0; i < maze.length; i++){
+        for (int j = 0 ;j < maze[0].length; j++){
+          if (j == maze[0].length - 1) s += "\n";
+          s += maze[i][j];
+        }
+      }
+      return s;
+    }
+
+    /**
+     * Checks if possible has possible end
+     * @return true if maze has end
+     */
     public boolean hasEnd(){
       for (int i = 0; i < maze.length; i++){
         for (int x = 0; x < maze[0].length; x++){
@@ -49,6 +64,10 @@ public class Maze{
       return false;
     }
 
+    /**
+     * Checks if maze has a starting "tile"
+     * @return true if maze has a start tile
+     */
     public boolean hasStart(){
       for (int i = 0; i < maze.length; i++){
         for (int x = 0; x < maze[0].length; x++){
@@ -124,6 +143,40 @@ public class Maze{
         All visited spots that are part of the solution are changed to '@'
     */
     private int solve(int row, int col){ //you can add more parameters since this is private
+      int count = 0;
+      char empty = ' ';
+      char end = 'E';
+      //these represent the next character in each direction
+      char up = maze[row][col + 1];
+      char down = maze[row][col - 1];
+      char right = maze[row + 1][col];
+      char left = maze[row - 1][col];
+      //checks if next move is the end
+      if (up == end || down == end || left == end || right == end) {
+        for (int i = 0; i < maze.length; i++){
+          for (int j = 0; j < maze[0].length; j++){
+            if (maze[i][j] == '@') count++;
+          }
+        }
+        return count;
+      }
+      //if next direction is a valid move solves that
+      if (up == empty) {
+        maze[row][col] = '@';
+        return solve(row,col+1);
+      }
+      if (down == empty) {
+        maze[row][col] = '@';
+        return solve(row,col-1);
+      }
+      if (right == empty) {
+        maze[row][col] = '@';
+        return solve(row+1,col);
+      }
+      if (left == empty) {
+        maze[row][col] = '@';
+        return solve(row-1,col);
+      }
 
         //automatic animation! You are welcome.
         if(animate){
@@ -131,9 +184,7 @@ public class Maze{
             System.out.println(this);
             wait(20);
         }
-
-        //COMPLETE SOLVE
-        return -1; //so it compiles
+        return count;
     }
 
 }
