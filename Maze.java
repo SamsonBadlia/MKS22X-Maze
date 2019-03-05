@@ -141,53 +141,28 @@ public class Maze{
         All visited spots that are part of the solution are changed to '@'
     */
     private int solve(int row, int col){ //you can add more parameters since this is private
+      int[] moves = new int[] {0,1,0,-1,1,0,-1,0};
 
-      //automatic animation! You are welcome.
-      if(animate){
-          clearTerminal();
-          System.out.println(this);
-          wait(20);
-      }
-
-      int count = 1;
-      char empty = ' ';
-      char end = 'E';
-      //these represent the next character in each direction
-      char up = maze[row][col + 1];
-      char down = maze[row][col - 1];
-      char right = maze[row + 1][col];
-      char left = maze[row - 1][col];
-      //checks if next move is the end
-      if (up == end || down == end || left == end || right == end) {
-        maze[row][col] = '@';
-        for (int i = 0; i < maze.length; i++){
-          for (int j = 0; j < maze[0].length; j++){
-            if (maze[i][j] == '@') count++;
-          }
-        }
-        return count;
-      }
-      //if next direction is a valid move solves that
-      if (up == empty) {
-        maze[row][col] = '@';
-        return solve(row,col+1);
-      }
-      if (down == empty) {
-        maze[row][col] = '@';
-        return solve(row,col-1);
-      }
-      if (right == empty) {
-        maze[row][col] = '@';
-        return solve(row+1,col);
-      }
-      if (left == empty) {
-        maze[row][col] = '@';
-        return solve(row-1,col);
-      }
-
-        //automatic animation! You are welcome.
-
-        return count;
-    }
+      // automatic animation! You are welcome.
+  		if (animate) {
+  			clearTerminal();
+  			System.out.println(this);
+  			wait(20);
+  		}
+  		int count = 0;
+      int r = 0, c = 0;
+  		maze[r][c] = '@';
+      //loops through move array to check surrounding tiles
+  		for (int i = 0; i < 8; i += 2) {
+  			r = moves[i] + row;
+  			c = moves[i+1] + col;
+  			if (maze[r][c] == ' ') {
+  				count = solve(r, c);
+  				if (count != -1) return count+1;
+  			} else if (maze[r][c] == 'E') return 1;
+  		}
+  		maze[r][c] = '.';
+  		return -1;
+  	}
 
 }
