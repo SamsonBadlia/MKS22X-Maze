@@ -110,59 +110,40 @@ public class Maze{
     }
 
 
-    /*Wrapper Solve Function returns the helper function
-      Note the helper function has the same name, but different parameters.
-      Since the constructor exits when the file is not found or is missing an E or S, we can assume it exists.
-    */
     public int solve(){
-      int r = 0, c = 0;
-      for (int i = 0; i < maze.length; i++){
-        for (int j = 0; j < maze[0].length; j++){
-          if (maze[i][j] == 'S'){
-            r = i;
-            c = j;
-          }
-        }
-      }
-      return solve(r,c);
+         for (int i = 0; i < maze.length; i++){
+           for (int j = 0; j < maze[i].length; j++){
+             if (maze[i][j] == 'S'){
+               maze[i][j] = ' ';
+               return solve(i, j, 0);
+             }
+           }
+         }
+         return -1;
+       }
+
+
+       private int solve(int row, int col, int steps){
+         //automatic animation! You are welcome.
+         /*if(animate){
+           clearTerminal();
+           System.out.println(this);
+           wait(20);
+         }*/
+         if (maze[row][col] == 'E') return steps;
+         if (maze[row][col] != ' ') return -1;
+         int[][] moves = new int[][]{
+           {0,1} , {1,0} , {0,-1} , {-1,0}
+         };
+         for (int i = 0; i < moves.length; i++){
+           int r = row + moves[i][0];
+           int c = col + moves[i][1];
+           maze[row][col] = '@';
+           int solution = solve(r, c, steps + 1);
+           if (solution != -1) return solution;
+           maze[row][col] = '.';
+         }
+         return -1;
+       }
+
     }
-
-    /*
-      Recursive Solve function:
-
-      A solved maze has a path marked with '@' from S to E.
-
-      Returns the number of @ symbols from S to E when the maze is solved,
-      Returns -1 when the maze has no solution.
-
-      Postcondition:
-        The S is replaced with '@' but the 'E' is not.
-        All visited spots that were not part of the solution are changed to '.'
-        All visited spots that are part of the solution are changed to '@'
-    */
-    private int solve(int row, int col){ //you can add more parameters since this is private
-      int[] moves = new int[] {0,1,0,-1,1,0,-1,0};
-
-      // automatic animation! You are welcome.
-  		if (animate) {
-  			clearTerminal();
-  			System.out.println(this);
-  			wait(20);
-  		}
-  		int count = 0;
-      int r = 0, c = 0;
-  		maze[r][c] = '@';
-      //loops through move array to check surrounding tiles
-  		for (int i = 0; i < 8; i += 2) {
-  			r = moves[i] + row;
-  			c = moves[i+1] + col;
-  			if (maze[r][c] == ' ') {
-  				count = solve(r, c);
-  				if (count != -1) return count+1;
-  			} else if (maze[r][c] == 'E') return 1;
-  		}
-  		maze[r][c] = '.';
-  		return -1;
-  	}
-
-}
